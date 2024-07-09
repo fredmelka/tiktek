@@ -1,0 +1,111 @@
+* {margin: 0; padding: 0;}
+
+html {max-width: 800px; margin: 0 auto; overflow: hidden; user-select: none;}
+
+body {background-color: #262626;}
+
+#score {
+display: flex;
+justify-content: center;
+align-items: center;
+height: 6vh;
+padding: 1vh 5vw;
+margin-top: 1vh;
+gap: 18vw;
+
+& i {color: #ffec3d; font-size: 3rem;}
+& div > i {color: #ff85c0; font-size: 3rem;}
+& p {color: #fa541c; font-size: 3rem; font-family: "Fuzzy Bubbles", sans-serif; font-weight: 700; text-shadow: white 10px;}
+& span {font-size: 1.5rem; font-family: "Poppins", sans-serif; font-weight: 200; color: #ff85c0;}
+}
+
+#board {
+max-height: 90vh;
+border-bottom: 2px dotted darkgray;
+display: flex;
+flex-wrap: wrap;
+justify-content: space-around;
+align-items: flex-start;
+gap: 2vw;
+padding: 2vh 2vw;
+}
+
+#console {
+position: absolute;
+width: 100%;
+bottom: 2vh;
+max-height: 18vh;
+overflow-x: hidden;
+overflow-y: auto;
+}
+
+.spot {
+aspect-ratio: 1;
+/* border: 2px dotted white; */
+border-radius: 10px;
+display: flex;
+align-items: center;
+justify-content: center;
+width: 40%;
+height: auto;
+}
+
+.number {
+font-family: "Poppins", sans-serif;
+font-weight: 700;
+font-size: 8rem;
+text-align: center;
+transition: color 300ms ease-in-out;
+}
+
+.red {color: #cf1322;}
+.orange {color: #d46b08;}
+.beige {color: #ffe58f;}
+.lime {color: #a0d911;}
+.geekblue {color: #2f54eb;}
+.purple {color: #9e1068;}
+.pink {color: #eb2f96;}
+.rose {color: #ffadd2;}
+.yellow {color: #fadb14;}
+.violet {color: #722ed1;}
+.blue {color: #5cdbd3;}
+.brown {color: #ad2102;}
+.white {color: white;}
+
+
+.symbol {padding: 2vh 2vw;}
+
+.expression {
+display: flex;
+justify-content: space-between;
+align-items: center;
+font-family: "Poppins", sans-serif;
+font-weight: 200;
+font-size: 2vh;
+padding: 0.5vh 2vw 0.5vh;
+border-bottom: 1px dotted lightgray;
+}
+
+.expression:nth-child(odd) {background-color: #434343; color: #e6f7ff;}
+.expression:nth-child(even) {background-color: #595959; color: #fffbe6;}
+
+.dragSTART {position: absolute;}
+.dropZONE {border: 2px dashed black;}
+.dragMOVE {
+text-shadow: #ffccc7 2px 2px 10px;
+color: #f5222d;
+font-family: "Fuzzy Bubbles", sans-serif;
+font-weight: 700;
+}
+
+:modal {
+background-color: lightgray;
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+}
+
+#board:has(.dragMOVE) p:not(.dragMOVE) {color: #ffccc7;}
+
+::backdrop {backdrop-filter: blur(2px);}
