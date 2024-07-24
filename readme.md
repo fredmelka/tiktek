@@ -1,3 +1,3 @@
-### _tiktek
+### _tiktek_
 
-This repository is the client tool for gaming tik-tek.
+This repository is the client side for playing **Tik Tek** game application.

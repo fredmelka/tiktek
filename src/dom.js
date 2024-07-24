@@ -1,70 +1,95 @@
 
-const _COLORS = {
+const _COLORS = {/* CSS classes */
     palette: ['red', 'orange', 'beige', 'lime', 'geekblue', 'purple', 'pink', 'rose', 'yellow', 'violet', 'blue', 'brown'],
-    computed: 'white'
+    computed: 'computed-geekblue'
 };
+const _FONTAWESOME = {/* Web component name */ 
+    bars: {classes: ['fa-solid', 'fa-bars', 'menu']},
+    circleXmark: {classes: ['fa-solid', 'fa-circle-xmark']},
+    lightbulb: {classes: ['fa-solid', 'fa-lightbulb']},
+    paperPlane: {classes: ['fa-solid', 'fa-paper-plane']},
+    rotateRight: {classes: ['fa-solid', 'fa-rotate-right']},
+    plus: {classes: ['fa-solid', 'fa-plus', 'fa-2xl', 'symbol'], symbol: '+'},
+    minus: {classes: ['fa-solid', 'fa-minus', 'fa-2xl', 'symbol'], symbol: '-'},
+    xmark: {classes: ['fa-solid', 'fa-xmark', 'fa-2xl', 'symbol'], symbol: '*'},
+    divide: {classes: ['fa-solid', 'fa-divide', 'fa-2xl', 'symbol'], symbol: '/'}
+};
+let _IDPRINTS = [];
 
-const _ICONS = {
-    xmark: {fontAwesome: 'circle-xmark', class: ['fa-regular', 'fa-circle-xmark']},
-    kickoff: {fontAwesome: 'rotate-right', class: ['fa-solid', 'fa-rotate-right']},
-    life: {fontAwesome: 'user-shield', class: ['fa-solid', 'fa-user-shield']},
+export const set = (length) => {
+    let slots = [];
+    for (let id = 0; id < length; id++) {let e = document.createElement('div'); e.id = id; e.classList.add('slot'); slots.push(e);};
+    document.getElementById('board').replaceChildren(...slots);
 };
-
-export const setBoard = (length) => {
-    let spots = [];
-    for (let id = 0; id < length; id++) {let e = document.createElement('div'); e.id = id; e.classList.add('spot'); spots.push(e);};
-    document.getElementById('board').replaceChildren(...spots);
-};
-export const fillState = ({start, attempts, target, tokens}) => {
+export const fill = ({startMethod, attempts, target, tokens}) => {
     {/* Header */
-    let kickoff = document.createElement('i');
-        kickoff.classList.add(..._ICONS.kickoff.class); kickoff.onclick = start;
-    let goal = document.createElement('p');
-        goal.innerText = `${target}`.padStart(3,'0');
-    let count = document.createElement('div');
-        {let life = document.createElement('i'); life.classList.add(..._ICONS.life.class);
+    let menu = document.createElement('div');
+       {let quit = document.createElement('i'); quit.classList.add(..._FONTAWESOME.paperPlane.classes);
+        let solve = document.createElement('i'); solve.classList.add(..._FONTAWESOME.lightbulb.classes);
+        let start = document.createElement('i'); start.classList.add(..._FONTAWESOME.rotateRight.classes); start.onclick = startMethod;
         let trials = document.createElement('span'); trials.innerText = ` `+`${attempts}`.padStart(2,'0');
-        count.replaceChildren(life, trials);};
-    document.getElementById('score').replaceChildren(kickoff, goal, count);
+        menu.replaceChildren(quit, solve, start, trials);};
+    let goal = document.createElement('p'); goal.innerText = `${target}`.padStart(3,'0');
+    document.getElementById('menu').replaceChildren(menu, goal);
     };
     {/* Board */
     let {palette} = _COLORS;
-    let spots = document.querySelectorAll('div.spot'); spots.forEach(node => node.replaceChildren());
+    let slots = document.querySelectorAll('div.slot'); slots.forEach(node => node.replaceChildren());
     for (let [i, token] of tokens.entries()) {
         let e = document.createElement('p'); e.classList.add(`number`, palette[Math.floor(Math.random() * palette.length)]);
-        e.innerText = token; e.setAttribute('data-text', `${token}`);
-        spots[i].appendChild(e);};
+        e.innerText = token; e.setAttribute('data-text', `${token}`); e.setAttribute('data-value', token);
+        slots[i].appendChild(e);};
+    };
+    {/* Logger */
+    let menu = document.createElement('i'); menu.classList.add(..._FONTAWESOME.bars.classes);
+    let log = document.getElementById('console'); log.classList.add('hide');
+    menu.onclick = () => {log.classList.toggle('hide'); log.classList.toggle('appear'); log.classList.remove('fade-out');};
+    document.getElementById('board').appendChild(menu);
     };
 };
-export const updateState = (from, to, next) => {
+export const update = (from, to, next) => {
     from.replaceChildren(); to.replaceChildren();
     let e = document.createElement('p'); e.classList.add('number', _COLORS.computed);
-    e.innerText = next.value; e.setAttribute('data-text', next.text);
+    e.setAttribute('data-text', next.text); e.setAttribute('data-value', next.value);
+    e.innerText = Number.isInteger(next.value) ? next.value : `${Math.floor(next.value)}..`;
     to.appendChild(e);
     return e;
 };
-export const listen = (callBack, HOF) => {
-    document.querySelectorAll('p.number').forEach(node => callBack(node, HOF));
+export const listen = (hook, callBack) => {
+    document.querySelectorAll('p.number').forEach(node => hook(node, callBack));
+};
+export const log = (attempt) => {
+    let e = document.createElement('div'); e.classList.add('log', attempt % 2 ? 'even' : 'odd');
+    e.setAttribute('data-attempt', attempt);
+    let closeButton = document.createElement('i'); closeButton.classList.add(..._FONTAWESOME.circleXmark.classes);
+    closeButton.onclick = (event) => {event.target.parentNode.remove();};
+    e.appendChild(closeButton);
+    document.getElementById('console').prepend(e);
 };
 export const print = (step) => {
-    let e = document.createElement('div'); e.classList.add('expression');
+
+    const log = document.getElementById('console');
+    _IDPRINTS.forEach(clearTimeout); _IDPRINTS = [];
+    log.classList.remove('fade-out', 'hide'); log.classList.add('appear');
+
+    let e = document.createElement('span'); e.innerText = step.text;
     e.setAttribute('data-text', step.text); e.setAttribute('data-value', step.value);
-    let text = document.createElement('span'); text.innerText = step.text;
-    let xmark = document.createElement('i'); xmark.classList.add(..._ICONS.xmark.class);
-    xmark.onclick = (e) => {e.target.parentNode.remove();};
-    e.replaceChildren(text, xmark); document.getElementById('console').prepend(e);
+    log.firstChild.prepend(e);
+    _IDPRINTS.push(setTimeout(() => {log.classList.toggle('fade-out');}, 3000));
+    _IDPRINTS.push(setTimeout(() => {log.classList.toggle('hide'); log.classList.toggle('appear');}, 4000));
 };
 export const dialog = () => {
-    const symbols = [{img: '➕', math: '+'}, {img: '➖', math: '-'}, {img: '✖️', math: '*'}, {img: '➗', math: '/'}];
     let dialog = document.createElement('dialog');
-    for (let operator of symbols) {
-        let e = document.createElement('div'); e.classList.add('symbol');
-        e.innerText = operator.img; e.setAttribute('data-math', operator.math);
-        dialog.appendChild(e);};
+    for (let icon in _FONTAWESOME) {
+        if (!('symbol' in _FONTAWESOME[icon])) {continue;};
+        let e = document.createElement('i'); e.setAttribute('data-math', _FONTAWESOME[icon].symbol);
+        e.classList.add(..._FONTAWESOME[icon].classes);
+        dialog.appendChild(e);
+    };
     document.getElementById('board').appendChild(dialog);
     dialog.showModal();
     return dialog;
 };
 
-const DOM = {dialog, fillState, listen, print, setBoard, updateState};
+const DOM = {dialog, fill, listen, log, print, set, update};
 export default DOM;
