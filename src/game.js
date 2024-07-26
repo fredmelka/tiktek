@@ -36,6 +36,6 @@ print()                     {this.moves.length === 1 && DOM.log(this.attempts); 
 end()                       {console.log('Well done!', this.moves);}
 };
 
-let tokens = Array(8).fill(0).map(() => 1 + Math.floor(Math.random() * 10));
-let target = Math.floor(50 + Math.random() * 150);
+let tokens = Array(5).fill(0).map(() => 1 + Math.floor(Math.random() * 10));
+let target = Math.floor(Math.random() * (200 - 0) + 0);
 let jeu = new Game(); jeu.data = {target, tokens}; jeu.start();

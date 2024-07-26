@@ -22,15 +22,24 @@ export const set = (length) => {
     document.getElementById('board').replaceChildren(...slots);
 };
 export const fill = ({startMethod, attempts, target, tokens}) => {
-    {/* Header */
-    let menu = document.createElement('div');
-       {let quit = document.createElement('i'); quit.classList.add(..._FONTAWESOME.paperPlane.classes);
-        let solve = document.createElement('i'); solve.classList.add(..._FONTAWESOME.lightbulb.classes);
-        let start = document.createElement('i'); start.classList.add(..._FONTAWESOME.rotateRight.classes); start.onclick = startMethod;
-        let trials = document.createElement('span'); trials.innerText = ` `+`${attempts}`.padStart(2,'0');
-        menu.replaceChildren(quit, solve, start, trials);};
-    let goal = document.createElement('p'); goal.innerText = `${target}`.padStart(3,'0');
-    document.getElementById('menu').replaceChildren(menu, goal);
+    {/* Menu */
+    let menu = document.getElementById('menu');
+    let options = ''; /*  --> TO BE REFACTORED PROPERLY USING LOOP AND SETTING OBJECT! */
+    options += `<li>
+        <span class='bullet'><i class='${_FONTAWESOME.lightbulb.classes.join(' ')}'></i></span>
+        <span>Solve for ${`${target}`.padStart(3,'0')}</span>
+        </li>`;
+    options += `<li class='button_attempts'>
+        <span class='bullet'><i class='${_FONTAWESOME.rotateRight.classes.join(' ')}'></i></span>
+        <span>Attempt ${` `+`${attempts}`.padStart(2,'0')}</span>
+        </li>`;
+    options += `<li>
+        <span class='bullet'><i class='${_FONTAWESOME.paperPlane.classes.join(' ')}'></i></span>
+        <span>Quit</span>
+        </li>`;
+    options = '<ul>'+options+'</ul>';
+    menu.innerHTML = options;
+    document.querySelector('.button_attempts').onclick = startMethod;
     };
     {/* Board */
     let {palette} = _COLORS;
@@ -40,7 +49,7 @@ export const fill = ({startMethod, attempts, target, tokens}) => {
         e.innerText = token; e.setAttribute('data-text', `${token}`); e.setAttribute('data-value', token);
         slots[i].appendChild(e);};
     };
-    {/* Logger */
+    {/* Log */
     let menu = document.createElement('i'); menu.classList.add(..._FONTAWESOME.bars.classes);
     let log = document.getElementById('console'); log.classList.add('hide');
     menu.onclick = () => {log.classList.toggle('hide'); log.classList.toggle('appear'); log.classList.remove('fade-out');};
