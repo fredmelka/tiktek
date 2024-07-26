@@ -31,7 +31,7 @@ export const fill = ({startMethod, attempts, target, tokens}) => {
         </li>`;
     options += `<li class='button_attempts'>
         <span class='bullet'><i class='${_FONTAWESOME.rotateRight.classes.join(' ')}'></i></span>
-        <span>Attempt ${` `+`${attempts}`.padStart(2,'0')}</span>
+        <span>Attempt # ${`${attempts}`.padStart(2,'0')}</span>
         </li>`;
     options += `<li>
         <span class='bullet'><i class='${_FONTAWESOME.paperPlane.classes.join(' ')}'></i></span>
@@ -52,6 +52,7 @@ export const fill = ({startMethod, attempts, target, tokens}) => {
     {/* Log */
     let menu = document.createElement('i'); menu.classList.add(..._FONTAWESOME.bars.classes);
     let log = document.getElementById('console'); log.classList.add('hide');
+    'touchstart touchend'.split(' ').forEach(event => menu.addEventListener(event, function () {}, true));
     menu.onclick = () => {log.classList.toggle('hide'); log.classList.toggle('appear'); log.classList.remove('fade-out');};
     document.getElementById('board').appendChild(menu);
     };

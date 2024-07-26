@@ -2,13 +2,13 @@
 
 html {max-width: 768px; margin: 0 auto;}
 
-body {background-color: #fafafa; overflow: hidden; touch-action: none; user-select: none;}
+body {background-color: #fafafa; overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none;}
 
 ul {list-style-type: none;}
 li {padding: 1vh 0;}
 
 #game:has(.menu:active) #menu {opacity: 1; visibility: visible;/* animation: slide-in-left 300ms cubic-bezier(.25,.46,.45,.94) both;*/}
-@keyframes slide-in-left{0%{transform:translateX(-768px);opacity:0}100%{transform:translateX(0);opacity:1}}
+/* @keyframes slide-in-left{0%{transform:translateX(-768px);opacity:0}100%{transform:translateX(0);opacity:1}} */
 
 #board {
 /* max-height: 90vh; */
@@ -46,7 +46,7 @@ width: 90vw;
 
 & i {color: #092b00; font-size: 3rem; text-shadow: 5px 5px 5px gray;}
 & span {font-size: 2.0rem; font-family: "Poppins", sans-serif; font-weight: 200; color: #061178;}
-& span.bullet {display: inline-block; width: 12vw;}
+& span.bullet {display: inline-block; width: 13vw;}
 }
 
 .slot {
@@ -97,7 +97,7 @@ bottom: 3vh;
 left: 5vw;
 z-index: 1;
 
-& div {position: relative; top: -100px;}
+/* & div {position: relative; top: -100px;} */
 }
 
 .fade-out {animation: fade-out 900ms cubic-bezier(0.390, 0.575, 0.565, 1.000) both;}
