@@ -18,21 +18,21 @@ set attempts(num)           {this._attempts = num;}
 get attempts()              {return this._attempts;}
 set moves(array)            {this._moves = array;}
 get moves()                 {return this._moves;}
-get steps()                 {return this._steps;}
-get eog()                   {return (this.moves.length === (this.data.tokens.length - 1)) && this.steps.at(-1).value === this.data.target;}
-constructor()               {this._moves = []; this._steps = []; this._attempts = 0;}
+get expressions()           {return this._expressions;}
+get eog()                   {return (this.moves.length === (this.data.tokens.length - 1)) && this.expressions.at(-1).value === this.data.target;}
+constructor()               {this._moves = []; this._expressions = []; this._attempts = 0;}
 start()                     {this.attempts++; this.moves = []; this.data.tokens.fisherYates();
     DOM.set(this.#BOARDSIZE);
     DOM.fill({startMethod: this.start.bind(this), attempts: this.attempts, ...this.data});
     DOM.listen(useObserver, this.move.bind(this));
 }
 move(drop)                  {let {OP_1, OP_2, symbol} = drop; this.moves.push(drop);
-    let step = {value: this.#MATHS[symbol].algebraic(OP_1, OP_2), text: this.#MATHS[symbol].text(OP_1, OP_2).cleanBracket()};
-    this.steps.push(step); this.print();
+    let expression = {value: this.#MATHS[symbol].algebraic(OP_1, OP_2), text: this.#MATHS[symbol].text(OP_1, OP_2).cleanBracket()};
+    this.expressions.push(expression); this.print();
     if (this.eog) {setTimeout(() => this.end(), 1000);};
-    return step;
+    return expression;
 }
-print()                     {this.moves.length === 1 && DOM.log(this.attempts); DOM.print(this.steps.at(-1));}
+print()                     {this.moves.length === 1 && DOM.log(this.attempts); DOM.print(this.expressions.at(-1));}
 end()                       {console.log('Well done!', this.moves);}
 };
 

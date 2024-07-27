@@ -5,6 +5,7 @@ const _COLORS = {/* CSS classes */
 };
 const _FONTAWESOME = {/* Web component name */ 
     bars: {classes: ['fa-solid', 'fa-bars', 'menu']},
+    clipboardList: {classes: ['fa-solid', 'fa-clipboard-list']},
     circleXmark: {classes: ['fa-solid', 'fa-circle-xmark']},
     lightbulb: {classes: ['fa-solid', 'fa-lightbulb']},
     paperPlane: {classes: ['fa-solid', 'fa-paper-plane']},
@@ -14,7 +15,6 @@ const _FONTAWESOME = {/* Web component name */
     xmark: {classes: ['fa-solid', 'fa-xmark', 'fa-2xl', 'symbol'], symbol: '*'},
     divide: {classes: ['fa-solid', 'fa-divide', 'fa-2xl', 'symbol'], symbol: '/'}
 };
-let _IDPRINTS = [];
 
 export const set = (length) => {
     let slots = [];
@@ -29,6 +29,10 @@ export const fill = ({startMethod, attempts, target, tokens}) => {
         <span class='bullet'><i class='${_FONTAWESOME.lightbulb.classes.join(' ')}'></i></span>
         <span>Solve for ${`${target}`.padStart(3,'0')}</span>
         </li>`;
+    options += `<li class='button_history'>
+        <span class='bullet'><i class='${_FONTAWESOME.clipboardList.classes.join(' ')}'></i></span>
+        <span>History</span>
+        </li>`;
     options += `<li class='button_attempts'>
         <span class='bullet'><i class='${_FONTAWESOME.rotateRight.classes.join(' ')}'></i></span>
         <span>Attempt # ${`${attempts}`.padStart(2,'0')}</span>
@@ -40,6 +44,8 @@ export const fill = ({startMethod, attempts, target, tokens}) => {
     options = '<ul>'+options+'</ul>';
     menu.innerHTML = options;
     document.querySelector('.button_attempts').onclick = startMethod;
+    document.querySelector('.button_history').onclick = () => {let log = document.getElementById('console');
+        log.classList.toggle('appear'); log.classList.toggle('hide');};
     };
     {/* Board */
     let {palette} = _COLORS;
@@ -53,15 +59,15 @@ export const fill = ({startMethod, attempts, target, tokens}) => {
     let menu = document.createElement('i'); menu.classList.add(..._FONTAWESOME.bars.classes);
     let log = document.getElementById('console'); log.classList.add('hide');
     'touchstart touchend'.split(' ').forEach(event => menu.addEventListener(event, function () {}, true));
-    menu.onclick = () => {log.classList.toggle('hide'); log.classList.toggle('appear'); log.classList.remove('fade-out');};
+    // menu.onclick = () => {log.classList.toggle('hide'); log.classList.toggle('appear'); log.classList.remove('fade-out');};
     document.getElementById('board').appendChild(menu);
     };
 };
-export const update = (from, to, next) => {
+export const update = (from, to, newToken) => {
     from.replaceChildren(); to.replaceChildren();
     let e = document.createElement('p'); e.classList.add('number', _COLORS.computed);
-    e.setAttribute('data-text', next.text); e.setAttribute('data-value', next.value);
-    e.innerText = Number.isInteger(next.value) ? next.value : `${Math.floor(next.value)}..`;
+    e.setAttribute('data-text', newToken.text); e.setAttribute('data-value', newToken.value);
+    e.innerText = Number.isInteger(newToken.value) ? newToken.value : `${Math.floor(newToken.value)}..`;
     to.appendChild(e);
     return e;
 };
@@ -76,17 +82,15 @@ export const log = (attempt) => {
     e.appendChild(closeButton);
     document.getElementById('console').prepend(e);
 };
-export const print = (step) => {
-
-    const log = document.getElementById('console');
-    _IDPRINTS.forEach(clearTimeout); _IDPRINTS = [];
-    log.classList.remove('fade-out', 'hide'); log.classList.add('appear');
-
-    let e = document.createElement('span'); e.innerText = step.text;
-    e.setAttribute('data-text', step.text); e.setAttribute('data-value', step.value);
-    log.firstChild.prepend(e);
-    _IDPRINTS.push(setTimeout(() => {log.classList.toggle('fade-out');}, 3000));
-    _IDPRINTS.push(setTimeout(() => {log.classList.toggle('hide'); log.classList.toggle('appear');}, 4000));
+export const print = (message) => {
+    const receiver = document.getElementById('messenger'), console = document.getElementById('console');
+    let element = document.createElement('span');
+    element.classList.add('log', 'slide-down');
+    element.innerText = `${message.text} = ${message.value}`;
+    element.setAttribute('data-text', message.text); element.setAttribute('data-value', message.value);
+    receiver.appendChild(element);
+    setTimeout(() => {element.classList.add('fade-out');}, 4500);
+    setTimeout(() => {element.className = ''; console.firstChild.appendChild(element);}, 5500);
 };
 export const dialog = () => {
     let dialog = document.createElement('dialog');
