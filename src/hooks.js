@@ -25,7 +25,7 @@ function end (event) {
     let done = false,
         from = event.target.parentNode, to = null,
         OP_1 = {value: +element.dataset.value, text: element.dataset.text}, OP_2 = null,
-        symbol = null, newToken = null;
+        symbol = null, expression = null;
     let dropZones = Array.from(document.querySelectorAll('div.slot')).filter(node => node.id !== from.id);
     for (let target of dropZones) {if (isIN(element, target)) {done = true; to = target; break;};};
     if (!done) {/* No valid move */
@@ -44,8 +44,8 @@ function end (event) {
     };
     document.querySelectorAll('i.symbol').forEach(node => node.onclick = function () {
         symbol = node.dataset.math;
-        newToken = moveCallBack({OP_1, OP_2, symbol});
-        let computedElement = DOMupdate(from, to, newToken); useObserver(computedElement, moveCallBack);
+        expression = moveCallBack({OP_1, OP_2, symbol});
+        let newToken = DOMupdate(from, to, expression); useObserver(newToken, moveCallBack);
     });
     document.onpointermove = null; document.onpointerup = null;
 };

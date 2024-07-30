@@ -18,7 +18,8 @@ const _FONTAWESOME = {/* Web component name */
 
 export const set = (length) => {
     let slots = [];
-    for (let id = 0; id < length; id++) {let e = document.createElement('div'); e.id = id; e.classList.add('slot'); slots.push(e);};
+    for (let id = 0; id < length; id++) {let slot = document.createElement('div');
+        slot.id = id; slot.classList.add('slot'); slots.push(slot);};
     document.getElementById('board').replaceChildren(...slots);
 };
 export const fill = ({startMethod, attempts, target, tokens}) => {
@@ -51,54 +52,54 @@ export const fill = ({startMethod, attempts, target, tokens}) => {
     let {palette} = _COLORS;
     let slots = document.querySelectorAll('div.slot'); slots.forEach(node => node.replaceChildren());
     for (let [i, token] of tokens.entries()) {
-        let e = document.createElement('p'); e.classList.add(`number`, palette[Math.floor(Math.random() * palette.length)]);
-        e.innerText = token; e.setAttribute('data-text', `${token}`); e.setAttribute('data-value', token);
-        slots[i].appendChild(e);};
+        let number = document.createElement('p');
+        number.classList.add(`number`, palette[Math.floor(Math.random() * palette.length)]);
+        number.innerText = token;
+        ['text', 'value'].forEach(attribute => number.dataset[attribute] = token);
+        slots[i].appendChild(number);};
     };
     {/* Log */
     let menu = document.createElement('i'); menu.classList.add(..._FONTAWESOME.bars.classes);
     let log = document.getElementById('console'); log.classList.add('hide');
     'touchstart touchend'.split(' ').forEach(event => menu.addEventListener(event, function () {}, true));
-    // menu.onclick = () => {log.classList.toggle('hide'); log.classList.toggle('appear'); log.classList.remove('fade-out');};
     document.getElementById('board').appendChild(menu);
     };
 };
-export const update = (from, to, newToken) => {
+export const update = (from, to, expression) => {
     from.replaceChildren(); to.replaceChildren();
-    let e = document.createElement('p'); e.classList.add('number', _COLORS.computed);
-    e.setAttribute('data-text', newToken.text); e.setAttribute('data-value', newToken.value);
-    e.innerText = Number.isInteger(newToken.value) ? newToken.value : `${Math.floor(newToken.value)}..`;
-    to.appendChild(e);
-    return e;
+    let token = document.createElement('p'); token.classList.add('number', _COLORS.computed);
+    ['text', 'value'].forEach(attribute => token.dataset[attribute] = expression[attribute]);
+    token.innerText = Number.isInteger(expression.value) ? expression.value : `${Math.floor(expression.value)}..`;
+    to.appendChild(token);
+    return token;
 };
 export const listen = (hook, callBack) => {
     document.querySelectorAll('p.number').forEach(node => hook(node, callBack));
 };
 export const log = (attempt) => {
-    let e = document.createElement('div'); e.classList.add('log', attempt % 2 ? 'even' : 'odd');
-    e.setAttribute('data-attempt', attempt);
+    let log = document.createElement('div'); log.classList.add('log'); log.dataset.attempt = attempt;
     let closeButton = document.createElement('i'); closeButton.classList.add(..._FONTAWESOME.circleXmark.classes);
     closeButton.onclick = (event) => {event.target.parentNode.remove();};
-    e.appendChild(closeButton);
-    document.getElementById('console').prepend(e);
+    log.appendChild(closeButton);
+    document.getElementById('console').prepend(log);
 };
 export const print = (message) => {
-    const receiver = document.getElementById('messenger'), console = document.getElementById('console');
-    let element = document.createElement('span');
-    element.classList.add('log', 'slide-down');
-    element.innerText = `${message.text} = ${message.value}`;
-    element.setAttribute('data-text', message.text); element.setAttribute('data-value', message.value);
-    receiver.appendChild(element);
-    setTimeout(() => {element.classList.add('fade-out');}, 4500);
-    setTimeout(() => {element.className = ''; console.firstChild.appendChild(element);}, 5500);
+    const messenger = document.getElementById('messenger'), console = document.getElementById('console');
+    let expression = document.createElement('span');
+    expression.classList.add('slide-down');
+    expression.innerText = `${message.text} = ${message.value}`;
+    ['text', 'value'].forEach(attribute => expression.dataset[attribute] = message[attribute]);
+    messenger.appendChild(expression);
+    setTimeout(() => {expression.classList.add('fade-out');}, 4000); // Does not work --> TO BE FIXED!
+    setTimeout(() => {expression.className = ''; console.firstChild.appendChild(expression);}, 5000);
 };
 export const dialog = () => {
     let dialog = document.createElement('dialog');
     for (let icon in _FONTAWESOME) {
         if (!('symbol' in _FONTAWESOME[icon])) {continue;};
-        let e = document.createElement('i'); e.setAttribute('data-math', _FONTAWESOME[icon].symbol);
-        e.classList.add(..._FONTAWESOME[icon].classes);
-        dialog.appendChild(e);
+        let symbol = document.createElement('i'); symbol.dataset.math = _FONTAWESOME[icon].symbol;
+        symbol.classList.add(..._FONTAWESOME[icon].classes);
+        dialog.appendChild(symbol);
     };
     document.getElementById('board').appendChild(dialog);
     dialog.showModal();
