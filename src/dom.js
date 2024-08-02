@@ -1,8 +1,7 @@
 
-const _COLORS = {/* CSS classes */
-    palette: ['red', 'orange', 'beige', 'lime', 'geekblue', 'purple', 'pink', 'rose', 'yellow', 'violet', 'blue', 'brown'],
-    computed: 'computed-geekblue'
-};
+import Gameboard from './components/board.js';
+import Token from './components/token.js';
+
 const _FONTAWESOME = {/* Web component name */ 
     bars: {classes: ['fa-solid', 'fa-bars', 'menu']},
     clipboardList: {classes: ['fa-solid', 'fa-clipboard-list']},
@@ -16,11 +15,10 @@ const _FONTAWESOME = {/* Web component name */
     divide: {classes: ['fa-solid', 'fa-divide', 'fa-2xl', 'symbol'], symbol: '/'}
 };
 
-export const set = (length) => {
-    let slots = [];
-    for (let id = 0; id < length; id++) {let slot = document.createElement('div');
-        slot.id = id; slot.classList.add('slot'); slots.push(slot);};
-    document.getElementById('board').replaceChildren(...slots);
+export const set = (boardSize, data, moveCallback) => {
+    document.querySelector('tk-game') && document.querySelector('tk-game').remove();
+    let game = new Gameboard(boardSize, data, moveCallback);
+    document.getElementById('game').appendChild(game);
 };
 export const fill = ({startMethod, attempts, target, tokens}) => {
     {/* Menu */
@@ -48,33 +46,25 @@ export const fill = ({startMethod, attempts, target, tokens}) => {
     document.querySelector('.button_history').onclick = () => {let log = document.getElementById('console');
         log.classList.toggle('appear'); log.classList.toggle('hide');};
     };
-    {/* Board */
-    let {palette} = _COLORS;
-    let slots = document.querySelectorAll('div.slot'); slots.forEach(node => node.replaceChildren());
-    for (let [i, token] of tokens.entries()) {
-        let number = document.createElement('p');
-        number.classList.add(`number`, palette[Math.floor(Math.random() * palette.length)]);
-        number.innerText = token;
-        ['text', 'value'].forEach(attribute => number.dataset[attribute] = token);
-        slots[i].appendChild(number);};
+    {/* Board
+    document.querySelectorAll('tk-slot').forEach((node, index) => {
+        node.replaceChildren();
+        if (tokens[index]) {node.innerHTML = `<tk-token data-text=${tokens[index]} data-value=${tokens[index]} />`;};});
+    */
     };
     {/* Log */
     let menu = document.createElement('i'); menu.classList.add(..._FONTAWESOME.bars.classes);
     let log = document.getElementById('console'); log.classList.add('hide');
     'touchstart touchend'.split(' ').forEach(event => menu.addEventListener(event, function () {}, true));
-    document.getElementById('board').appendChild(menu);
+    document.querySelector('tk-game').appendChild(menu);
     };
 };
-export const update = (from, to, expression) => {
+export const update = (from, to, expression, callBack) => {
     from.replaceChildren(); to.replaceChildren();
-    let token = document.createElement('p'); token.classList.add('number', _COLORS.computed);
-    ['text', 'value'].forEach(attribute => token.dataset[attribute] = expression[attribute]);
-    token.innerText = Number.isInteger(expression.value) ? expression.value : `${Math.floor(expression.value)}..`;
+    let token = new Token(); token.move = callBack;
+    ['text', 'value'].forEach(attribute => token[attribute] = expression[attribute]);
     to.appendChild(token);
     return token;
-};
-export const listen = (hook, callBack) => {
-    document.querySelectorAll('p.number').forEach(node => hook(node, callBack));
 };
 export const log = (attempt) => {
     let log = document.createElement('div'); log.classList.add('log'); log.dataset.attempt = attempt;
@@ -101,10 +91,10 @@ export const dialog = () => {
         symbol.classList.add(..._FONTAWESOME[icon].classes);
         dialog.appendChild(symbol);
     };
-    document.getElementById('board').appendChild(dialog);
+    document.getElementById('game').appendChild(dialog);
     dialog.showModal();
     return dialog;
 };
 
-const DOM = {dialog, fill, listen, log, print, set, update};
+const DOM = {dialog, fill, log, print, set, update};
 export default DOM;

@@ -1,12 +1,11 @@
 
 import DOM from './dom.js';
-import useObserver from './hooks.js';
 import './utils.js';
 
 class Game {
-#DATA = {target: null, inputs: null}
+#DATA = {target: null, tokens: null}
 #BOARDSIZE = 8
-#MATHS = {/* Visitor pattern */
+#MATHS = {/* VISITOR PATTERN */
     '+': {algebraic: (a, b) => a.value + b.value, text: (a, b) => `(${a.text}) + (${b.text})`},
     '-': {algebraic: (a, b) => a.value - b.value, text: (a, b) => `(${a.text}) - (${b.text})`},
     '*': {algebraic: (a, b) => a.value * b.value, text: (a, b) => `(${a.text}) × (${b.text})`},
@@ -22,13 +21,13 @@ get expressions()           {return this._expressions;}
 get eog()                   {return (this.moves.length === (this.data.tokens.length - 1)) && this.expressions.at(-1).value === this.data.target;}
 constructor()               {this._moves = []; this._expressions = []; this._attempts = 0;}
 start()                     {this.attempts++; this.moves = []; this.data.tokens.fisherYates();
-    DOM.set(this.#BOARDSIZE);
+    DOM.set(this.#BOARDSIZE, this.data, this.move.bind(this));
     DOM.fill({startMethod: this.start.bind(this), attempts: this.attempts, ...this.data});
-    DOM.listen(useObserver, this.move.bind(this));
 }
 move(drop)                  {let {OP_1, OP_2, symbol} = drop; this.moves.push(drop);
     let expression = {value: this.#MATHS[symbol].algebraic(OP_1, OP_2), text: this.#MATHS[symbol].text(OP_1, OP_2).cleanBracket()};
-    this.expressions.push(expression); this.print();
+    this.expressions.push(expression);
+    this.print();
     if (this.eog) {setTimeout(() => this.end(), 1000);};
     return expression;
 }

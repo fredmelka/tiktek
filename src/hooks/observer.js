@@ -1,14 +1,16 @@
 
-import {dialog as DOMdialog, update as DOMupdate} from './dom.js';
+import {dialog as DOMdialog, update as DOMupdate} from '../dom.js';
 
 const threshold = 0.70;
-export default function useObserver (element, moveCallBack) {
 
-let oldX, oldY, newX, newY;
-element.onpointerdown = start;
+export default function useObserver (callBack) {
 
-function start (event) {
-    event.preventDefault();
+let element, oldX, oldY, newX, newY;
+return drag;
+
+function drag (event) {
+    element = event.target;
+    event.preventDefault(); event.stopPropagation();
     element.classList.add('dragSTART');
     [oldX, oldY] = [event.clientX, event.clientY];
     document.onpointerup = end; document.onpointermove = move;
@@ -23,20 +25,22 @@ function move (event) {
 function end (event) {
     event.preventDefault();
     let done = false,
-        from = event.target.parentNode, to = null,
+        from = element.parentNode, to = null,
         OP_1 = {value: +element.dataset.value, text: element.dataset.text}, OP_2 = null,
         symbol = null, expression = null;
-    let dropZones = Array.from(document.querySelectorAll('div.slot')).filter(node => node.id !== from.id);
+    let dropZones = Array.from(document.querySelectorAll('tk-slot')).filter(node => node.id !== from.id);
     for (let target of dropZones) {if (isIN(element, target)) {done = true; to = target; break;};};
-    if (!done) {/* No valid move */
+
+    if (!done) {/* NOT A VALID MOVE */
         element.classList.remove('dragSTART', 'dragMOVE'); element.style = null;
         document.onpointermove = null; document.onpointerup = null;
     return;};
-    if (!to.hasChildNodes()) {/* Move to an empty slot */
+    if (!to.hasChildNodes()) {/* MOVE TO EMPTY SLOT */
         element.classList.remove('dragSTART', 'dragMOVE'); element.style = null;
         to.appendChild(element);
         document.onpointermove = null; document.onpointerup = null;
     return;};
+
     OP_2 = {value: +to.firstChild.dataset.value, text: to.firstChild.dataset.text};
     let dialog = DOMdialog();
     dialog.onclick = () => {dialog.close(); dialog.remove();
@@ -44,8 +48,8 @@ function end (event) {
     };
     document.querySelectorAll('i.symbol').forEach(node => node.onclick = function () {
         symbol = node.dataset.math;
-        expression = moveCallBack({OP_1, OP_2, symbol});
-        let newToken = DOMupdate(from, to, expression); useObserver(newToken, moveCallBack);
+        expression = callBack({OP_1, OP_2, symbol});
+        DOMupdate(from, to, expression, callBack);
     });
     document.onpointermove = null; document.onpointerup = null;
 };
