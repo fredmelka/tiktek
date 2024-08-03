@@ -6,11 +6,10 @@ static get observedAttributes() {return ['id'];}
         set: (value) => {this.setAttribute(attribute, value);},
         get: () => this.getAttribute(attribute),
         enumerable: false};
-    return properties;}
-, {}));
+        return properties;}
+    , {}));
 }
 constructor()   {super(); this.#setProps();}
-/* attributeChangedCallback(attribute, previous, next) {console.log(`${attribute}: ${previous} -> ${next}`);} --- Can be later removed */
 };
 
 customElements.define('tk-slot', Slot);

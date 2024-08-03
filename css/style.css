@@ -1,24 +1,26 @@
+:root {
+--max-screen: 768px;
+--main-color: #f5222d;
+--main-bg-color: #fafafa;
+--tk-color-red: #820014;
+--tk-color-orange: #612500;
+--tk-color-lime: #3f6600;
+--tk-color-cyan: #00474f;
+--tk-color-gold: #613400;
+--tk-color-purple: #22075e;
+--tk-color-magenta:#780650;
+}
+
 * {margin: 0; padding: 0;}
 
-html {max-width: 768px; margin: 0 auto;}
+html {max-width: var(--max-screen); margin: 0 auto;}
 
-body {background-color: #fafafa; overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none;}
+body {background-color: var(--main-bg-color); overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none;}
 
 ul {list-style-type: none;}
 li {padding: 1vh 0;}
 
 #game:has(.menu:active) #menu {opacity: 1; visibility: visible;}
-
-tk-game {
-display: flex;
-flex-wrap: wrap;
-justify-content: space-around;
-align-items: flex-start;
-gap: 2vw;
-padding: 2vh 2vw;
-}
-
-#board:has(.dragMOVE) p:not(.dragMOVE) {color: #595959;}
 
 #console {
 overflow-x: hidden;
@@ -40,7 +42,7 @@ width: 100vw;
 &:empty {display: none;}
 
 & span {
-background-color: #fafafa;
+background-color: var(--main-bg-color);
 border-radius: 1vh;
 box-shadow: 5px 5px 5px lightgray;
 font-family: "Poppins", sans-serif;
@@ -71,6 +73,17 @@ width: 90vw;
 & span.bullet {display: inline-block; width: 13vw;}
 }
 
+tk-game {
+display: flex;
+flex-wrap: wrap;
+justify-content: space-around;
+align-items: flex-start;
+gap: 2vw;
+padding: 2vh 2vw;
+}
+
+tk-game:has(.dragged) tk-token:not(.dragBackground) {color: #595959; opacity: 0.5;}
+
 tk-slot {
 aspect-ratio: 1.3;
 border-radius: 10px;
@@ -86,7 +99,7 @@ font-family: "Ubuntu", sans-serif;
 font-weight: 700;
 font-size: 8rem;
 text-align: center;
-transition: color 800ms ease-in-out;
+transition: color 500ms ease-in-out;
 touch-action: none;
 user-select: none;
 }
@@ -125,29 +138,19 @@ z-index: 1;
 .slide-down {animation: slide-down 500ms cubic-bezier(.51,.51,.23,1.29) both;}
 @keyframes slide-down {0%{transform:translateY(-100px);opacity:0}100%{transform:translateY(0);opacity:1}}
 
-.dragSTART {position: absolute;}
-.dragMOVE {
-text-shadow: #434343 2px 2px 8px;
-color: #f5222d;
-font-family: "Fuzzy Bubbles", sans-serif;
-font-weight: 700;
-}
+.dragged {position: absolute;}
+.dragBackground {text-shadow: #434343 2px 2px 8px; color: var(--main-color) !important; font-family: "Fuzzy Bubbles", sans-serif; font-weight: 700;}
 
 .appear {display: block !important;}
 .hide {display: none !important;}
 
-.red {color: #cf1322;}
-.orange {color: #d46b08;}
-.beige {color: #ffe58f;}
-.lime {color: #a0d911;}
-.geekblue {color: #2f54eb;}
-.purple {color: #9e1068;}
-.pink {color: #eb2f96;}
-.rose {color: #ffadd2;}
-.yellow {color: #fadb14;}
-.violet {color: #722ed1;}
-.blue {color: #5cdbd3;}
-.brown {color: #ad2102;}
+.red {color: var(--tk-color-red);}
+.orange {color: var(--tk-color-orange);}
+.lime {color: var(--tk-color-lime);}
+.cyan {color: var(--tk-color-cyan);}
+.gold {color: var(--tk-color-gold);}
+.purple {color: var(--tk-color-purple);}
+.magenta {color: var(--tk-color-magenta);}
 .computed-geekblue {color: #030852;}
 
 :modal {

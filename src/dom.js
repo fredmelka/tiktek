@@ -1,6 +1,6 @@
 
 import Gameboard from './components/board.js';
-import Token from './components/token.js';
+import Token from './components/board.token.js';
 
 const _FONTAWESOME = {/* Web component name */ 
     bars: {classes: ['fa-solid', 'fa-bars', 'menu']},
@@ -59,9 +59,9 @@ export const fill = ({startMethod, attempts, target, tokens}) => {
     document.querySelector('tk-game').appendChild(menu);
     };
 };
-export const update = (from, to, expression, callBack) => {
+export const update = (from, to, expression) => {
     from.replaceChildren(); to.replaceChildren();
-    let token = new Token(); token.move = callBack;
+    let token = new Token();
     ['text', 'value'].forEach(attribute => token[attribute] = expression[attribute]);
     to.appendChild(token);
     return token;

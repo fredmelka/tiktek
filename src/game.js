@@ -1,6 +1,6 @@
 
 import DOM from './dom.js';
-import './utils.js';
+import './utils/utils.js';
 
 class Game {
 #DATA = {target: null, tokens: null}
@@ -35,6 +35,6 @@ print()                     {this.moves.length === 1 && DOM.log(this.attempts); 
 end()                       {console.log('Well done!', this.moves);}
 };
 
-let tokens = Array(5).fill(0).map(() => 1 + Math.floor(Math.random() * 10));
-let target = Math.floor(Math.random() * (200 - 0) + 0);
+let tokens = Array(5).fill(0).map(() => 1 + Math.floor(Math.random() * 20));
+let target = Math.floor(Math.random() * (500 - 50) + 50); /*  ...* (MAX - MIN) + MIN */
 let jeu = new Game(); jeu.data = {target, tokens}; jeu.start();
