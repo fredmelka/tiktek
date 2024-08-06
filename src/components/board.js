@@ -1,6 +1,6 @@
 
-import Slot from './board.slot.js';
-import Token from './board.token.js';
+import Slot from './slot.js';
+import Token from './token.js';
 import useObserver from '../hooks/useObserver.js';
 
 export default class Gameboard extends HTMLElement {
