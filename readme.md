@@ -1,7 +1,6 @@
-### _tiktek_
+### _tik tek_
 
 This repository is the client side for playing **Tik Tek** game application.
-
 Server-side rendering for algebra parse and solver.
 
 <details>

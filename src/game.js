@@ -1,6 +1,6 @@
 
 import DOM from './dom.js';
-import './utils/utils.js';
+import './utils/protos.js';
 
 class Game {
 #DATA = {target: null, tokens: null}
@@ -36,6 +36,11 @@ print()                     {this.moves.length === 1 && DOM.log(this.attempts); 
 end()                       {console.log('Well done!', this.moves);}
 };
 
-let tokens = Array(8).fill(0).map(() => 1 + Math.floor(Math.random() * 10));
-let target = Math.floor(Math.random() * (500 - 0) + 0); /*  ...* (MAX - MIN) + MIN */
-let jeu = new Game(); jeu.data = {target, tokens}; jeu.start();
+let gameRules = {
+    countDown: () => {/* Countdown classic */
+    let items = [1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10,25,50,75,100], min = 100, max = 999, length = 6;
+    return {target: Math.floor(Math.random() * (max + 1 - min) + min), tokens: Array(length).fill(0).map(() => items.fisherYates().pop())};
+    }
+};
+
+let jeu = new Game(); jeu.data = gameRules.countDown(); jeu.start();
