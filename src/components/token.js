@@ -20,14 +20,14 @@ static get observedAttributes() {return ['key', 'class', 'data-text', 'data-valu
         if (!Token.observedAttributes.includes(attribute)) {properties[attribute] = { /* Properties */
             set: (value) => {this.props[attribute] = value;},
             get: () => this.props[attribute],
-            enumerable: false};
+            enumerable: true};
         return properties;};
     }, {}));
     list.forEach(attribute => this[attribute] = this.props[attribute]);
 }
 set props(object)       {this._props = object;}
 get props()             {return this._props;}
-constructor(props)      {super(); this.props = props; this.#setAccessors([...Object.keys(this.props), 'class']);}
+constructor(props)      {super(); this.props = props; this.props && this.#setAccessors([...Object.keys(this.props), 'class']);}
 connectedCallback()     {this.ownerDocument.defaultView && this.#render();}
 #render()               {let  {palette} = this.#COLORS;
     (this.text === this.value)
@@ -37,7 +37,7 @@ connectedCallback()     {this.ownerDocument.defaultView && this.#render();}
 }
 };
 
-customElements.define('tk-token', Token);
+customElements.define('game-token', Token);
 /*
 attributeChangedCallback(attribute, previous, next) {console.log(`Property ${attribute}: ${previous} -> ${next}`)};
 filter: drop-shadow(0 0 2em #61dafbaa);

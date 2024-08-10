@@ -2,6 +2,7 @@
 import DOM from './dom.js';
 import './utils/protos.js';
 
+
 class Game {
 #DATA = {target: null, tokens: null}
 #BOARDSIZE = 8
@@ -42,5 +43,4 @@ let gameRules = {
     return {target: Math.floor(Math.random() * (max + 1 - min) + min), tokens: Array(length).fill(0).map(() => items.fisherYates().pop())};
     }
 };
-
 let jeu = new Game(); jeu.data = gameRules.countDown(); jeu.start();

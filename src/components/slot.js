@@ -1,7 +1,7 @@
 
 export default class Slot extends HTMLElement {
 static get observedAttributes() {return ['id'];}
-#setProps()     {Object.defineProperties(this, Slot.observedAttributes.reduce(
+#setAttributes()     {Object.defineProperties(this, Slot.observedAttributes.reduce( /* Only Global attributes */
     (properties, attribute) => {properties[attribute] = {
         set: (value) => {this.setAttribute(attribute, value);},
         get: () => this.getAttribute(attribute),
@@ -9,7 +9,7 @@ static get observedAttributes() {return ['id'];}
         return properties;}
     , {}));
 }
-constructor()   {super(); this.#setProps();}
+constructor()   {super(); this.#setAttributes();}
 };
 
-customElements.define('tk-slot', Slot);
+customElements.define('game-slot', Slot);
